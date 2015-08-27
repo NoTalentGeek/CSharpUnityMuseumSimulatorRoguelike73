@@ -1,0 +1,68 @@
+﻿using UnityEngine;
+using System.Collections;
+public class ScriptButtonRoll20D:MonoBehaviour{
+
+	/*
+	Get reference to panel log game object.
+	This script needs to pass random number to panel log.
+	*/
+	private GameObject panelLog;
+	private ScriptPanelLog scriptPanelLog;
+
+	/*
+	This button need to know wether the explanation is already given or not.
+	So in order to do that this game object need to know the state of current exhibition
+		explanation, like whether or not the explanation is already given.
+	*/
+	private GameObject player;
+	private GameObject playerParent;
+	private ScriptPlayer scriptPlayer;
+
+	/*
+	This game object need to also take reference to TextResultButton20D game object
+		in order to get reference to random number it has been generated.
+	*/
+	private GameObject textResultButton20D;
+	private ScriptTextResultButton20D scriptTextResultButton20D;
+
+	void Start(){
+
+		//Assign all references.
+		panelLog = GameObject.Find("PanelLog");
+		scriptPanelLog = panelLog.GetComponent<ScriptPanelLog>();
+		player = GameObject.Find("Player");
+		scriptPlayer = player.GetComponent<ScriptPlayer>();
+		//Get the reference to ScriptTextResultButton20D.
+		textResultButton20D = GameObject.Find("TextResultButton20D");
+		scriptTextResultButton20D = textResultButton20D.GetComponent<ScriptTextResultButton20D>();
+
+	}
+	void Update(){
+
+		//Set reference so this program know what is player
+		playerParent = scriptPlayer.parent;
+
+	}
+
+	public void ButtonRoll20D(){
+
+		/*
+		This function is to check the current state of visited exhibition.
+		*/
+		if(playerParent.name != "MainCanvas"){
+
+			if(scriptPanelLog.exhibitionCopyList.Count > 1){
+				//Put the rolled number into panel log latest exhibitionCopyList.
+				if(scriptPanelLog.exhibitionCopyList[scriptPanelLog.exhibitionCopyList.Count - 1].rolledNumber == -1){
+
+					scriptPanelLog.exhibitionCopyList[scriptPanelLog.exhibitionCopyList.Count - 1].rolledNumber =
+						scriptTextResultButton20D.randomNumber;
+
+				}
+			}
+
+		}
+
+	}
+
+}

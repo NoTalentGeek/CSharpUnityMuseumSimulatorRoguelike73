@@ -1,0 +1,95 @@
+﻿using UnityEngine;
+using System.Collections;
+
+/*
+This script is for managing anything player game object related.
+For example, this script can reset player to initial position
+	regardless of screen resolution.
+*/
+public class ScriptPlayer:MonoBehaviour{
+
+	//Whether or not the player reset button is pressed.
+	private bool playerReset = false;
+
+	//int variables to hold the initial position per - resolution.
+	private int startingX = 0;
+	private int startingY = 0;
+
+	/*
+	Player game object should know their parent they are in.
+	So that we need to take reference at real time in which game object
+		this player become a chiold for.
+	*/
+	public GameObject parent = null;
+
+	//Get reference to border and its script for layouting purposes.
+	private GameObject border;
+	private ScriptBorder scriptBorder;
+	
+	//Get reference to panel notification game object and its script.
+	private GameObject panelNotification;
+	private ScriptPanelNotification scriptPanelNotification;
+
+	//Hold all button exhibition within the scene.
+	private GameObject[] buttonExhibitionArray;
+
+	//RectTransform of this game object.
+	private RectTransform rectTransform;
+
+	void Start(){
+
+		//Get the RectTransform component of this game object.
+		rectTransform = gameObject.GetComponent<RectTransform>();
+
+		//Assign value of border game object and its script.
+		border = GameObject.Find("Border");
+		scriptBorder = border.GetComponent<ScriptBorder>();
+
+		//Assign value for the reference of panel notification.
+		panelNotification = GameObject.Find("PanelNotification");
+		scriptPanelNotification = panelNotification.GetComponent<ScriptPanelNotification>();
+		
+	}
+
+	void Update(){
+
+		//Adjust the starting position of the player image.
+		startingX = -Screen.width/2 + (int)(rectTransform.sizeDelta.x/2) + (int)scriptBorder.borderHorizontalHeight;
+		startingY = 
+			-Screen.height/2
+			+ (int)(rectTransform.sizeDelta.y/2)
+			+ (int)GameObject.Find("PanelMainUI").GetComponent<RectTransform>().sizeDelta.y
+			+ (int)scriptBorder.borderHorizontalHeight;
+		rectTransform.anchoredPosition = new Vector2(startingX, startingY);
+
+		//Get to know this game object parent.
+		parent = gameObject.transform.parent.gameObject;
+
+	}
+
+	//Put the reset button function here.
+	public void ButtonReset(){
+
+		//Set notification.
+		SetNotification("Thank you for your visit and see you again!");
+
+		buttonExhibitionArray = GameObject.FindGameObjectsWithTag("ButtonExhibition");
+		gameObject.transform.SetParent(GameObject.Find("MainCanvas").transform);
+
+		//Set button exhibition boolean variable to false.
+		for(int i = 0; i < buttonExhibitionArray.Length; i ++){
+
+			buttonExhibitionArray[i].GetComponent<ScriptButtonExhibition>().SetMovePlayer(false);
+
+		}
+		
+	}
+
+	//A function to set the notification panel.
+	private void SetNotification(string _notification){
+	
+		scriptPanelNotification.textText.text = _notification;	
+	
+	}
+
+}
